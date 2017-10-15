@@ -1,8 +1,10 @@
 #ifndef XMLEDITORFORM_H
 #define XMLEDITORFORM_H
 
-#include <QWidget>
 #include <QFile>
+#include <QWidget>
+#include <QTreeWidgetItem>
+#include <QXmlStreamReader>
 
 namespace Ui {
 class XmlEditorForm;
@@ -20,6 +22,8 @@ public:
 
 private:
     Ui::XmlEditorForm *ui;
+
+    QTreeWidgetItem *addChildItem(QXmlStreamReader *a_reader);
 
 public slots:
     void    loadXmlFile(QString a_file_name);

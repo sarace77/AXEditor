@@ -39,7 +39,7 @@
       <item>
        <widget class="QTreeWidget" name="itemsWidget">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -50,6 +50,11 @@
           <height>0</height>
          </size>
         </property>
+        <column>
+         <property name="text">
+          <string>Item</string>
+         </property>
+        </column>
        </widget>
       </item>
       <item>
@@ -92,6 +97,11 @@
           <height>0</height>
          </size>
         </property>
+        <column>
+         <property name="text">
+          <string notr="true">1</string>
+         </property>
+        </column>
        </widget>
       </item>
       <item>
