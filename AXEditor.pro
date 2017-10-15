@@ -25,11 +25,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    xmleditorform.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    xmleditorform.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    xmleditorform.ui
+
+RESOURCES += \
+    pics/pics.qrc
 
