@@ -78,7 +78,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="itemViewBox">
+    <widget class="QGroupBox" name="nodeViewBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>4</horstretch>
@@ -86,11 +86,11 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Item View</string>
+      <string>Node View</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="QTreeWidget" name="itemWidget">
+       <widget class="QTreeWidget" name="attributesWidget">
         <property name="minimumSize">
          <size>
           <width>400</width>
@@ -99,7 +99,12 @@
         </property>
         <column>
          <property name="text">
-          <string notr="true">1</string>
+          <string notr="true">Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Value</string>
          </property>
         </column>
        </widget>

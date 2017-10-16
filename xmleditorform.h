@@ -24,9 +24,13 @@ private:
     Ui::XmlEditorForm *ui;
 
     QTreeWidgetItem *addChildItem(QXmlStreamReader *a_reader);
+    void            copyChildren(QTreeWidgetItem *a_source, QTreeWidgetItem *a_target);
 
 public slots:
     void    loadXmlFile(QString a_file_name);
+
+private slots:
+    void on_itemsWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 };
 
 #endif // XMLEDITORFORM_H
