@@ -3,8 +3,6 @@
 
 #include <QDebug>
 
-#define _ITEM_TYPE_TEXT "ItemTypeText"
-#define _ITEM_TYPE_ATTR "ItemTypeAttribute"
 
 XmlEditorForm::XmlEditorForm(QWidget *parent) :
     QWidget(parent),
@@ -27,6 +25,11 @@ QTreeWidgetItem *XmlEditorForm::addChildItem(QXmlStreamReader *a_reader)
     if(a_reader)
     {
         l_item = new QTreeWidgetItem();
+        for(int l_pos = QXmlStreamReader::NoToken; l_pos < QXmlStreamReader::ProcessingInstruction; l_pos++)
+        {
+            l_item->setCheckState(1 + (int) l_pos, Qt::Unchecked);
+        }
+        l_item->setCheckState(1 + (int) a_reader->tokenType(), Qt::Checked);
         l_item->setText(l_index++, QString(a_reader->name().toLatin1()));
         l_item->setText(l_index++, QString("%1").arg(a_reader->attributes().count()));
         if(!a_reader->attributes().isEmpty())
@@ -40,6 +43,7 @@ QTreeWidgetItem *XmlEditorForm::addChildItem(QXmlStreamReader *a_reader)
                 l_item->setText(l_index++, QString(l_item_attribute.value().toLatin1()));
             }
         }
+
         bool l_exit_loop = false;
         while(!l_exit_loop && QXmlStreamReader::EndDocument != a_reader->readNext())
         {
@@ -63,7 +67,6 @@ QTreeWidgetItem *XmlEditorForm::addChildItem(QXmlStreamReader *a_reader)
                 {
                     QTreeWidgetItem *l_child_item = new QTreeWidgetItem(l_item);
                     l_child_item->setText(0, QString(a_reader->text().toLatin1()));
-                    l_child_item->setText(1, _ITEM_TYPE_TEXT);
                 }
                 break;
             }
@@ -125,8 +128,6 @@ void XmlEditorForm::loadXmlFile(QString a_file_name)
             if (l_item)
             {
                 ui->itemsWidget->addTopLevelItem(l_item);
-                ui->itemsWidget->repaint();
-                qDebug() << l_item->text(0) << l_item->childCount();
             }
         }
         m_input_file->close();
@@ -137,30 +138,70 @@ void XmlEditorForm::loadXmlFile(QString a_file_name)
     }
 }
 
+void XmlEditorForm::on_itemSearch_textChanged(const QString &a_search)
+{
+    QTreeWidgetItem *l_item = searchChild(NULL, a_search);
+    if(l_item)
+    {
+        ui->itemsWidget->setCurrentItem(l_item);
+    }
+}
 
 void XmlEditorForm::on_itemsWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
     ui->attributesWidget->clear();
+    ui->childrenWidget->clear();
+    if(previous)
+    {
+        ui->itemsWidget->collapseItem(previous);
+    }
     if (current)
     {
         int l_count = current->text(1).toInt();
+        ui->itemsWidget->expandItem(current);
         if(l_count > 0)
         {
             QTreeWidgetItem *l_item = new QTreeWidgetItem(ui->attributesWidget);
-            l_item->setText(0, current->text(0) + QString(" Attributes"));
+            l_item->setText(0, current->text(0));
             for(int l_index = 0; l_index < l_count; l_index++)
             {
                 QTreeWidgetItem *l_child = new QTreeWidgetItem(l_item);
                 l_child->setText(0, current->text(2 + l_index++));
                 l_child->setText(1, current->text(2 + l_index++));
             }
+            ui->attributesWidget->expandAll();
         }
         if(current->childCount() > 0)
         {
-            QTreeWidgetItem *l_item = new QTreeWidgetItem(ui->attributesWidget);
-            l_item->setText(0, current->text(0) + QString(" Nodes"));
+            QTreeWidgetItem *l_item = new QTreeWidgetItem(ui->childrenWidget);
+            l_item->setText(0, current->text(0));
             copyChildren(current, l_item);
+            ui->childrenWidget->expandAll();
         }
     }
-    ui->attributesWidget->expandAll();
 }
+
+QTreeWidgetItem *XmlEditorForm::searchChild(QTreeWidgetItem *a_item, QString a_search)
+{
+    QTreeWidgetItem *l_item = a_item ? a_item : (ui->itemsWidget->topLevelItemCount() > 0) ? ui->itemsWidget->topLevelItem(0) : NULL;
+    if(l_item)
+    {
+        if(l_item->text(0).contains(a_search))
+        {
+            return l_item;
+        }
+        else
+        {
+            for(int l_index = 0; l_index < l_item->childCount(); l_index++)
+            {
+                QTreeWidgetItem *l_child = searchChild(l_item->child(l_index), a_search);
+                if(l_child)
+                {
+                    return l_child;
+                }
+            }
+        }
+    }
+    return NULL;
+}
+
