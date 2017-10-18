@@ -14,8 +14,6 @@ class XmlEditorForm : public QWidget
 {
     Q_OBJECT
 
-    QFile   *m_input_file, m_output_file;
-
 public:
     explicit XmlEditorForm(QWidget *parent = 0);
     ~XmlEditorForm();
@@ -28,7 +26,7 @@ private:
     QTreeWidgetItem *searchChild(QTreeWidgetItem *a_item, QString a_search);
 
 public slots:
-    void            loadXmlFile(QString a_file_name);
+    void            decode(QByteArray a_data);
 
 private slots:
     void            on_itemSearch_textChanged(const QString &a_search);

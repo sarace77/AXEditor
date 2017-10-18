@@ -6,8 +6,6 @@
 
 XmlEditorForm::XmlEditorForm(QWidget *parent) :
     QWidget(parent),
-    m_input_file(NULL),
-    m_output_file(NULL),
     ui(new Ui::XmlEditorForm)
 {
     ui->setupUi(this);
@@ -112,29 +110,16 @@ void XmlEditorForm::copyChildren(QTreeWidgetItem *a_source, QTreeWidgetItem *a_t
     }
 }
 
-void XmlEditorForm::loadXmlFile(QString a_file_name)
+void XmlEditorForm::decode(QByteArray a_data)
 {
-    if(m_input_file)
+    QXmlStreamReader    l_reader(a_data);
+    while(l_reader.readNextStartElement())
     {
-        delete m_input_file;
-    }
-    m_input_file = new QFile(a_file_name);
-    if(m_input_file->open(QIODevice::ReadOnly))
-    {
-        QXmlStreamReader    l_reader(m_input_file);
-        while(l_reader.readNextStartElement())
+        QTreeWidgetItem *l_item = addChildItem(&l_reader);
+        if (l_item)
         {
-            QTreeWidgetItem *l_item = addChildItem(&l_reader);
-            if (l_item)
-            {
-                ui->itemsWidget->addTopLevelItem(l_item);
-            }
+            ui->itemsWidget->addTopLevelItem(l_item);
         }
-        m_input_file->close();
-    }
-    else
-    {
-        qWarning() << a_file_name << " open error!";
     }
 }
 
